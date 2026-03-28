@@ -25,6 +25,7 @@ class BreadthFirstSearch:
         # Initialize frontier with the root node
         frontera = QueueFrontier()
         frontera.add(root)
+
         # Si el estado inicial es el objetivo
         if grid.objective_test(root.state):
             return Solution(root, reached)
@@ -40,11 +41,13 @@ class BreadthFirstSearch:
             for a in grid.actions(n.state):
                 s1 = grid.result(n.state, a)
                 if s1 not in reached:
-                    n1= Node(s1,n,a,n.cost + grid.individual_cost(n.state,a))
+                    
+                    n1 = Node(value="",state=s1,parent=n,action=a,
+                              cost=n.cost + grid.individual_cost(n.state, a))
+                    
                     if grid.objective_test(s1):
-                        return Solution(n1)
+                        return Solution(n1, reached) 
+                    
                     reached[s1] = True
                     frontera.add(n1)
         
-        
-        return NoSolution(reached)
