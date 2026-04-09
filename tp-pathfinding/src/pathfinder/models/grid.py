@@ -111,8 +111,16 @@ class Grid:
 
     def __repr__(self) -> str:
         return f"Grid([[...], ...], {self.initial}, {self.end})"
+<<<<<<< HEAD
     
     def heuristicaManhattan(self, state:tuple[int,int])->int:
         filaActual, colActual = state
         filaObj, colObj = self.end
         return abs(filaActual - filaObj) + abs(colActual - colObj)
+=======
+
+    def heuristicaManhattan(self, state:tuple[int,int])->int:
+        filaActual, colActual = state
+        filaObj, colObj = self.end
+        return abs(filaActual - filaObj) + abs(colActual - colObj)
+>>>>>>> astar
