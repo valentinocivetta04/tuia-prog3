@@ -31,6 +31,29 @@ def estrategia_aleatoria(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, 
     
     return random.choice(acciones_disponibles)
 
+#FUNCIONES NECESARIAS PARA ALGORITMO MINIMAX
+def MINIMAX_MAX(problema: Tateti, estado: List[List[str]]):
+    if problema.test_terminal(estado):
+        return problema.utilidad(estado)
+    valor = -float("inf")
+    
+    for accion in problema.acciones(estado):
+        sucesor = problema.resultado(estado, accion)
+        valor = max(valor, MINIMAX_MIN(problema, sucesor))
+    
+    return valor
+
+def MINIMAX_MIN(problema: Tateti, estado: List[List[str]]):
+    if problema.test_terminal(estado):
+        return problema.utilidad(estado)
+    valor = float("inf")
+    
+    for accion in problema.acciones(estado):
+        sucesor = problema.resultado(estado, accion)
+        valor = min(valor, MINIMAX_MAX(problema, sucesor))
+    
+    return valor
+        
 def estrategia_minimax(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, int]:
     """
     Estrategia minimax: elige la mejor acción usando el algoritmo minimax.
@@ -45,23 +68,22 @@ def estrategia_minimax(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, in
     Raises:
         NotImplementedError: Hasta que el alumno implemente el algoritmo
     """
-    # TODO: Implementar algoritmo minimax
-
+    
     # INSTRUCCIONES:
     # 1. Eliminar la línea 'raise NotImplementedError...' de abajo
     # 2. Implementar el algoritmo minimax aquí
     # 3. La función debe retornar una tupla (fila, columna) con la mejor jugada
+    if tateti.jugador(estado) == JUGADOR_MAX:
+        sucs = {}
+        for accion in tateti.acciones(estado):
+            sucs[accion] = MINIMAX_MIN(tateti, tateti.resultado(estado, accion))
 
-    raise NotImplementedError(
-        "\n" + "="*60 +
-        "\n🚫 ALGORITMO MINIMAX NO IMPLEMENTADO" +
-        "\n" + "="*60 +
-        "\n\nPara usar la estrategia Minimax debe implementarla primero." +
-        "\n\nInstrucciones:" +
-        "\n1. Abra el archivo 'estrategias.py'" +
-        "\n2. Busque la función 'estrategia_minimax()'" +
-        "\n3. Elimine la línea 'raise NotImplementedError(...)'" +
-        "\n4. Implemente el algoritmo minimax" +
-        "\n\nMientras tanto, use la 'Estrategia Aleatoria'." +
-        "\n" + "="*60
-    )
+        return max(sucs, key=sucs.get)
+    
+    if tateti.jugador(estado) == JUGADOR_MIN:
+        sucs = {}
+        for accion in tateti.acciones(estado):
+            sucs[accion] = MINIMAX_MAX(tateti, tateti.resultado(estado, accion))
+
+        return min(sucs, key=sucs.get)
+
