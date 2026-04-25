@@ -9,7 +9,7 @@ Por defecto, se incluye una estrategia aleatoria como ejemplo base.
 
 import random
 from typing import List, Tuple
-from tateti import Tateti, JUGADOR_MAX, JUGADOR_MIN
+from tateti import Tateti, JUGADOR_MAX
 
 def estrategia_aleatoria(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, int]:
     """
@@ -31,6 +31,51 @@ def estrategia_aleatoria(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, 
     
     return random.choice(acciones_disponibles)
 
+def minimax_max(tateti: Tateti, estado: List[List[str]]) -> float:
+    """
+    Calcula recursivamente el valor minimax en un nodo MAX
+
+    Args:
+        tateti: Instancia de la clase Tateti
+        estado: Estado del tablero
+
+    Returns:
+        float: Valor minimax
+    """
+
+    if tateti.test_terminal(estado):
+        return tateti.utilidad(estado)
+
+    valor_minimax = -float("inf")
+
+    for accion in tateti.acciones(estado):
+        estado_sucesor = tateti.resultado(estado, accion)
+        valor_minimax = max(valor_minimax, minimax_min(tateti, estado_sucesor))
+
+    return valor_minimax
+
+def minimax_min(tateti: Tateti, estado: List[List[str]]) -> float:
+    """
+    Calcula recursivamente el valor minimax en un nodo MIN
+
+    Args:
+        tateti: Instancia de la clase Tateti
+        estado: Estado del tablero
+
+    Returns:
+        float: Valor minimax
+    """
+    if tateti.test_terminal(estado):
+        return tateti.utilidad(estado)
+
+    valor_minimax = float("inf")
+
+    for accion in tateti.acciones(estado):
+        estado_sucesor = tateti.resultado(estado, accion)
+        valor_minimax = min(valor_minimax, minimax_max(tateti, estado_sucesor))
+
+    return valor_minimax
+
 def estrategia_minimax(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, int]:
     """
     Estrategia minimax: elige la mejor acción usando el algoritmo minimax.
@@ -45,23 +90,18 @@ def estrategia_minimax(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, in
     Raises:
         NotImplementedError: Hasta que el alumno implemente el algoritmo
     """
-    # TODO: Implementar algoritmo minimax
 
-    # INSTRUCCIONES:
-    # 1. Eliminar la línea 'raise NotImplementedError...' de abajo
-    # 2. Implementar el algoritmo minimax aquí
-    # 3. La función debe retornar una tupla (fila, columna) con la mejor jugada
+    jugador = tateti.jugador(estado)
 
-    raise NotImplementedError(
-        "\n" + "="*60 +
-        "\n🚫 ALGORITMO MINIMAX NO IMPLEMENTADO" +
-        "\n" + "="*60 +
-        "\n\nPara usar la estrategia Minimax debe implementarla primero." +
-        "\n\nInstrucciones:" +
-        "\n1. Abra el archivo 'estrategias.py'" +
-        "\n2. Busque la función 'estrategia_minimax()'" +
-        "\n3. Elimine la línea 'raise NotImplementedError(...)'" +
-        "\n4. Implemente el algoritmo minimax" +
-        "\n\nMientras tanto, use la 'Estrategia Aleatoria'." +
-        "\n" + "="*60
-    )
+    estados_sucesores: dict[tuple[int, int], float] = {}
+
+    for accion_posible in tateti.acciones(estado):
+        if jugador == JUGADOR_MAX:
+            estados_sucesores[accion_posible] = minimax_min(tateti, estado)
+        else:
+            estados_sucesores[accion_posible] = minimax_max(tateti, estado)
+        
+    if jugador == JUGADOR_MAX:
+        return max(estados_sucesores, key=lambda key: estados_sucesores[key])
+    else:
+        return min(estados_sucesores, key=lambda key: estados_sucesores[key])
