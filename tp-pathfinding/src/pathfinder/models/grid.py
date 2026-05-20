@@ -116,5 +116,8 @@ class Grid:
     def heuristicaManhattan(self, state:tuple[int,int])->int:
         filaActual, colActual = state
         filaObj, colObj = self.end
+
+        # Calcula cuantos "pasos" horizontales y verticales separan ambos puntos 
+        # (el abs es para que no haya distancias negativas)
         return abs(filaActual - filaObj) + abs(colActual - colObj)
 

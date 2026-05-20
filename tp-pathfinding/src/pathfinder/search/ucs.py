@@ -27,8 +27,10 @@ class UniformCostSearch:
         frontera.add(root, root.cost)
         
         while True:
+
             if frontera.is_empty():
                 return NoSolution(reached)
+            
             n = frontera.pop()
 
             if grid.objective_test(n.state):
@@ -37,6 +39,7 @@ class UniformCostSearch:
             for a in grid.actions(n.state):
                 s1 = grid.result(n.state, a)
                 c1 = n.cost + grid.individual_cost(n.state, a)
+                
                 if s1 not in reached or c1 < reached[s1]:
                     n1 = Node(value="",state=s1,parent=n,action=a,
                               cost=c1)

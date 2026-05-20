@@ -93,13 +93,20 @@ def estrategia_minimax(tateti: Tateti, estado: List[List[str]]) -> Tuple[int, in
 
     jugador = tateti.jugador(estado)
 
+    # dic de jugada con puntaje posible
     estados_sucesores: dict[tuple[int, int], float] = {}
 
     for accion_posible in tateti.acciones(estado):
+
+        #estado_sucesor = tateti.resultado(estado, accion_posible)
+
         if jugador == JUGADOR_MAX:
+            # siempre queda evaluando lo mismo o dando resultados no optimos
             estados_sucesores[accion_posible] = minimax_min(tateti, estado)
+            #estados_sucesores[accion_posible] = minimax_min(tateti, estado_sucesor)
         else:
             estados_sucesores[accion_posible] = minimax_max(tateti, estado)
+            #estados_sucesores[accion_posible] = minimax_max(tateti, estado_sucesor)
         
     if jugador == JUGADOR_MAX:
         return max(estados_sucesores, key=lambda key: estados_sucesores[key])

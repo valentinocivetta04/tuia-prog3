@@ -19,6 +19,7 @@ class DepthFirstSearch:
         root = Node("", state=grid.initial, cost=0, parent=None, action=None)
 
         # Initialize expanded with the empty dictionary
+        # Marca los nodos al sacarlos, no al generarlos
         expanded = dict()
 
         # Initialize frontier with the root node
@@ -27,13 +28,16 @@ class DepthFirstSearch:
 
         # Si el estado inicial es el objetivo
         if grid.objective_test(root.state):
-            return Solution(root)
+            return Solution(root, expanded)
         
         while True:
             if frontera.is_empty():
                 return NoSolution(expanded)
             
             n = frontera.remove()
+
+            # Como un nodo pudo meterse varias veces a la frontera por distintos caminos,
+            # verificamos si ya lo expandimos antes de procesarlo
 
             if n.state in expanded:
                 continue
